@@ -1,8 +1,8 @@
 {
   "name": "nodejs-aws-utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Utilities function to work with AWS",
-  "main": "DynamoDBtoCSV.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/ymese/nodejs-aws-utils.git"
   },
   "author": "ymese",
-  "license": "ISC",
+  "license": "APACHE",
   "bugs": {
     "url": "https://github.com/ymese/nodejs-aws-utils/issues"
   },
