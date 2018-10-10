@@ -11,7 +11,7 @@
     "url": "git+https://github.com/ymese/nodejs-aws-utils.git"
   },
   "author": "ymese",
-  "license": "ISC",
+  "license": "APACHE",
   "bugs": {
     "url": "https://github.com/ymese/nodejs-aws-utils/issues"
   },
