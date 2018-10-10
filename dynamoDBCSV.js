@@ -4,9 +4,7 @@ const aws = require('aws-sdk');
 const path = require('path');
 const csvToJson = require('csvtojson');
 
-aws.config.loadFromPath(`${__dirname}/config.json`);
-
-const dynamoDB = new aws.DynamoDB();
+let dynamoDB;
 
 function generateDataDynamoDB(tableName, data) {
   const params = {
@@ -52,6 +50,14 @@ function createFile(locaFile, csv) {
 }
 
 module.exports = {
+  configByFile(pathConfig) {
+    aws.config.loadFromPath(pathConfig);
+    dynamoDB = new aws.DynamoDB();
+  },
+  config(accessKeyId, secretAccessKey, region) {
+    aws.config.update({ accessKeyId, secretAccessKey, region });
+    dynamoDB = new aws.DynamoDB();
+  },
   export(tableName, locationFile) {
     const params = {
       TableName: tableName,
