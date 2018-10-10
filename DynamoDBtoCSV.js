@@ -6,7 +6,6 @@ const path = require('path');
 aws.config.loadFromPath(`${__dirname}/config.json`);
 
 const dynamoDB = new aws.DynamoDB();
-
 function createFile(locaFile, csv) {
   const locationFile = path.resolve(locaFile);
   try {
