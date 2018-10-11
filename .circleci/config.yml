@@ -1,6 +1,6 @@
 version: 2
 jobs: 
-  publish: 
+  build: 
     working_directory: ~/nodejs-aws-utils
     docker:
       - image: circleci/node:8.10
@@ -15,15 +15,19 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
+  publish:
+      - attach_workspace:
+          at: ~/nodejs-aws-utils
       - run:
           name: Authenticate with registry
-          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/.npmrc
-      - run: 
-          name: Publish package to npmjs
+          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/nodejs-aws-utils/.npmrc
+      - run:
+          name: Publish package
           command: npm publish
 
 workflows:
   version: 2
   build-publish:
     jobs: 
+      - build
       - publish
