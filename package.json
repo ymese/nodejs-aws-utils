@@ -1,0 +1,29 @@
+{
+  "name": "nodejs-aws-utils",
+  "version": "1.0.3",
+  "description": "Utilities function to work with AWS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ymese/nodejs-aws-utils.git"
+  },
+  "author": "ymese",
+  "license": "APACHE",
+  "bugs": {
+    "url": "https://github.com/ymese/nodejs-aws-utils/issues"
+  },
+  "homepage": "https://github.com/ymese/nodejs-aws-utils#readme",
+  "devDependencies": {
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.331.0",
+    "csvtojson": "^2.0.8",
+    "json2csv": "^4.2.1"
+  }
+}
