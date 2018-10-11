@@ -19,7 +19,7 @@ jobs:
           at: ~/nodejs-aws-utils
       - run:
           name: Authenticate with registry
-          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/nodejs-aws-utils/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/nodejs-aws-utils/.npmrc
       - run:
           name: Publish package
           command: npm publish
