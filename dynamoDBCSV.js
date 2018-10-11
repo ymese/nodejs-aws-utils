@@ -4,8 +4,6 @@ const aws = require('aws-sdk');
 const path = require('path');
 const csvToJson = require('csvtojson');
 
-let dynamoDB;
-
 function generateDataDynamoDB(tableName, data) {
   const params = {
     RequestItems: {
@@ -24,15 +22,9 @@ function generateDataDynamoDB(tableName, data) {
 }
 
 function bulkData(tableName, data) {
+  const dynamoDB = new aws.DynamoDB();
   const params = generateDataDynamoDB(tableName, data);
-  console.log(params);
-  dynamoDB.batchWriteItem(params, (err) => {
-    if (err) {
-      throw err;
-    } else {
-      console.log('Imported');
-    }
-  });
+  return dynamoDB.batchWriteItem(params).promise();
 }
 
 function createFile(locaFile, csv) {
@@ -44,49 +36,38 @@ function createFile(locaFile, csv) {
       fs.mkdirSync(path.dirname(locationFile));
       fs.writeFileSync(locationFile, csv);
     }
+    return Promise.resolve(true);
   } catch (err) {
-    throw err;
+    return Promise.reject(err);
+  }
+}
+
+function csvFileToJson(data) {
+  const { Items: items } = data;
+  try {
+    const records = [];
+    items.forEach((element) => {
+      records.push(aws.DynamoDB.Converter.unmarshall(element));
+    });
+    const fields = Object.keys(records[0]);
+    const parser = new Json2csvParser({ fields });
+    const csv = parser.parse(records);
+    return Promise.resolve(csv);
+  } catch (err) {
+    return Promise.reject(err);
   }
 }
 
 module.exports = {
-  configByFile(pathConfig) {
-    aws.config.loadFromPath(pathConfig);
-    dynamoDB = new aws.DynamoDB();
+  exportCSV(params, locationFile) {
+    const dynamoDB = new aws.DynamoDB();
+    return dynamoDB.scan(params).promise()
+      .then(response => csvFileToJson(response))
+      .then(csv => createFile(locationFile, csv));
   },
-  config(accessKeyId, secretAccessKey, region) {
-    aws.config.update({ accessKeyId, secretAccessKey, region });
-    dynamoDB = new aws.DynamoDB();
-  },
-  export(tableName, locationFile) {
-    const params = {
-      TableName: tableName,
-    };
-    dynamoDB.scan(params, (error, data) => {
-      if (error) {
-        throw error;
-      } else {
-        const { Items: items } = data;
-        try {
-          const records = [];
-          items.forEach((element) => {
-            records.push(aws.DynamoDB.Converter.unmarshall(element));
-          });
-          const fields = Object.keys(records[0]);
-          const parser = new Json2csvParser({ fields });
-          const csv = parser.parse(records);
-          createFile(locationFile, csv);
-        } catch (err) {
-          throw err;
-        }
-      }
-    });
-  },
-  import(tableName, csvFilePath) {
-    csvToJson()
+  importCSV(tableName, csvFilePath) {
+    return csvToJson()
       .fromFile(csvFilePath)
-      .then((jsonObj) => {
-        bulkData(tableName, jsonObj);
-      });
+      .then(jsonObj => bulkData(tableName, jsonObj));
   },
 };
