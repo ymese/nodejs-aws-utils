@@ -1,6 +1,6 @@
 {
   "name": "nodejs-aws-utils",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Utilities function to work with AWS",
   "main": "index.js",
   "scripts": {
