@@ -17,7 +17,7 @@ jobs:
             - ./node_modules
       - run:
           name: Authenticate with registry
-          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/repo/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/nodejs-aws-utils/.npmrc
       - run: 
           name: Publish package to npmjs
           command: npm publish
