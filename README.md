@@ -43,7 +43,7 @@ awsUtils.dynamoDB.exportCSV({ TableName: 'table_name' }, './dat.csv')
 });
 
 ```
-# S3 buckets
+## S3 buckets
 List buckets :
 ```js
 awsUtils.bucket.list()
@@ -86,8 +86,8 @@ Set distribution config:
 awsUtils.cloudFront.setDistributionConfig();
 ```
 
-# Release history
+## Release history
 
-# Meta
+## Meta
 Ymese Team - Ymese.com
 Distributed under the APACHE license. See LICENSE for more information.
