@@ -1,9 +1,77 @@
 const aws = require('aws-sdk');
-const fs = require('fs');
 
-let distributionConfig = JSON.parse(
-  fs.readFileSync('./resources/configDistributionCloudFront.json', 'utf8'),
-);
+let distributionConfig = {
+  DistributionConfig: {
+    Comment: '',
+    CacheBehaviors: {
+      Quantity: 0,
+    },
+    Logging: {
+      Bucket: '',
+      Prefix: '',
+      Enabled: false,
+      IncludeCookies: false,
+    },
+    Origins: {
+      Items: [
+        {
+          OriginPath: '',
+          CustomOriginConfig: {
+            OriginProtocolPolicy: 'http-only',
+            HTTPPort: 80,
+            HTTPSPort: 443,
+          },
+          Id: '',
+          DomainName: '',
+        },
+      ],
+      Quantity: 1,
+    },
+    PriceClass: 'PriceClass_All',
+    Enabled: true,
+    DefaultCacheBehavior: {
+      TrustedSigners: {
+        Enabled: false,
+        Quantity: 0,
+      },
+      TargetOriginId: '',
+      ViewerProtocolPolicy: 'allow-all',
+      ForwardedValues: {
+        Headers: {
+          Quantity: 0,
+        },
+        Cookies: {
+          Forward: 'none',
+        },
+        QueryString: false,
+      },
+      SmoothStreaming: false,
+      AllowedMethods: {
+        Items: ['GET', 'HEAD'],
+        CachedMethods: {
+          Items: ['GET', 'HEAD'],
+          Quantity: 2,
+        },
+        Quantity: 2,
+      },
+      MinTTL: 0,
+    },
+    CallerReference: '',
+    CustomErrorResponses: {
+      Quantity: 0,
+    },
+    Restrictions: {
+      GeoRestriction: {
+        RestrictionType: 'none',
+        Quantity: 0,
+      },
+    },
+    Aliases: {
+      Quantity: 0,
+    },
+  },
+};
+
 
 module.exports = {
   createDistributionDefault({ id, domainName }) {
