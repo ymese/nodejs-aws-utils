@@ -1,16 +1,16 @@
-# Nodejs-aws-utils
+# nodejs-aws-utils
 > Utilities function to work with AWS
 
-Nodejs-aws-utils makes aws-sdk easier by provide a libary for **s3 bucket**, **dynamoDB**, **CloudFront** and support **promise**
+nodejs-aws-utils makes life easier in Amazon Web Services by providing the helpers for CRUD **s3 bucket**, exporting/importing **dynamoDB** data, creating **CloudFront** distribution and all functions will return a **promise**.
 
 ## Installation 
-The easiest way to use nodejs-aws-utils is to install it from npm 
+The easiest way to use nodejs-aws-utils is to install it from npm.
 ```sh
 npm i nodejs-aws-utils --save
 ```
 
 ## Config
-Config default : 
+Config default: 
 ```js
 const awsUtils = require('nodejs-aws-utils');
 awsUtils.config('ACCESS_KEY_ID', 'SECRET_ACCESS_KEY', 'REGION');
@@ -21,7 +21,7 @@ const awsUtils = require('nodejs-aws-utils');
 awsUtils.configByFile('path');
 ```
 ## DynamoDB
-Import csv file to dynamoDB :
+Import csv file to dynamoDB:
 ```js
 const awsUtils = require('./index');
 awsUtils.dynamoDB.importCSV('table_name', './dat.csv')
@@ -30,7 +30,7 @@ awsUtils.dynamoDB.importCSV('table_name', './dat.csv')
   })
   .catch(err => console.log(err.stack));
 ```
-Export csv file from dynamoDB :
+Export csv file from dynamoDB:
 ```js
 const awsUtils = require('./index');
 awsUtils.dynamoDB.exportCSV({ TableName: 'table_name' }, './dat.csv')
@@ -44,26 +44,26 @@ awsUtils.dynamoDB.exportCSV({ TableName: 'table_name' }, './dat.csv')
 
 ```
 ## S3 buckets
-List buckets :
+List buckets:
 ```js
 awsUtils.bucket.list()
   .then(data => console.log(data))
   .catch(err => console.log(err));
 ```
-Create s3 bucket :
+Create s3 bucket:
 ```js
 awsUtils.bucket.create('bucket_name')
   .then(data => console.log(data))
   .catch(err => console.log(err));
 ```
-Upload file to s3 bucket :
+Upload file to s3 bucket:
 ```js
 awsUtils.bucket.uploadFile('bucket_name', './pic.png')
   .then(data => console.log(data))
   .catch(err => console.log(err));
 ```
 ## CloudFront
-Create distribution default :
+Create distribution default:
 ```js
 awsUtils.cloudFront.createDistributionDefault({
   id: 'example_name_id',
@@ -71,7 +71,7 @@ awsUtils.cloudFront.createDistributionDefault({
 }).then(data => console.log(data))
   .catch(err => console.log(err));
 ```
-Create distribution with [parameters]((https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudFront.html#createDistribution-property)) :
+Create distribution with [parameters]((https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudFront.html#createDistribution-property)):
 ```js
 awsUtils.cloudFront.createDistribution(parameters)
   .then(data => console.log(data))
@@ -87,6 +87,12 @@ awsUtils.cloudFront.setDistributionConfig();
 ```
 
 ## Release history
+
+**1.1.0** - 13/10/2018 
+
+* Import/export the DynamoDB data
+* Create, list a S3 Bucket and upload the files there
+* Create the CloudFront Distribution
 
 ## Meta
 Ymese Team - Ymese.com
