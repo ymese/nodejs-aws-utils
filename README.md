@@ -96,4 +96,5 @@ awsUtils.cloudFront.setDistributionConfig();
 
 ## Meta
 Ymese Team - Ymese.com
+
 Distributed under the APACHE license. See LICENSE for more information.
