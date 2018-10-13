@@ -21,7 +21,7 @@ const awsUtils = require('nodejs-aws-utils');
 awsUtils.configByFile('path');
 ```
 ## DynamoDB
-Import CSV file to DynamoDB:
+Import DynamoDB data from CSV file:
 ```js
 const awsUtils = require('./index');
 awsUtils.dynamoDB.importCSV('table_name', './dat.csv')
@@ -30,7 +30,7 @@ awsUtils.dynamoDB.importCSV('table_name', './dat.csv')
   })
   .catch(err => console.log(err.stack));
 ```
-Export CSV file from DynamoDB:
+Export CSV data to CSV file: 
 ```js
 const awsUtils = require('./index');
 awsUtils.dynamoDB.exportCSV({ TableName: 'table_name' }, './dat.csv')
