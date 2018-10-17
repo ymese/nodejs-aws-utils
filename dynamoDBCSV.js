@@ -26,32 +26,39 @@ function standardizedObject(data) {
   data.forEach((dataElement, index) => {
     Object.keys(dataElement).forEach((keyElement) => {
       if (dataElement[keyElement] === '') { delete data[index][keyElement]; }
+      if (dataElement[keyElement] === 'false') {
+        dataElement[keyElement] = false;
+      }
+      if (dataElement[keyElement] === 'true') {
+        dataElement[keyElement] = true;
+      }
     });
   });
   return data;
 }
 
-function batchWritePromise(dynamoDB, params) {
-  return new Promise((resolve, reject) => {
+function batchWritePromise(dynamoDB, params){
+  return new Promise((resolve,reject) => {
     dynamoDB.batchWriteItem(params, (err, data) => {
-      if (err) reject(err)
-      else
-        resolve(data);
-    });
+      if (err) return reject(err);
+      resolve(data);
+    })
+
   });
 }
 
 
 function bulkData(tableName, data) {
   const dynamoDB = new aws.DynamoDB();
-  const promises = [];
-  for (let i = 0; i < data.length; i += 25) {
-    const params = generateDataDynamoDB(tableName, standardizedObject(data.slice(i, i + 25)));
+  let promises = [];
+  for (let i = 0; i < data.length ; i+=25){
+    let params = generateDataDynamoDB(tableName, standardizedObject(data.slice(i, i + 25)));
+    // console.log(params.RequestItems.pda_license[0].PutRequest.Item);
     promises.push(batchWritePromise(dynamoDB, params));
   }
-  Promise.all(promises).then((values) => {
+  Promise.all(promises).then(values => {
     console.log(values);
-  });
+  }).catch(err => console.log(err));
 }
 
 function createFile(locaFile, csv) {
@@ -75,8 +82,8 @@ function csvFileToJson(data) {
     const records = [];
     let fields = [];
     items.forEach((element) => {
-      const temp = aws.DynamoDB.Converter.unmarshall(element);
-      if (Object.keys(temp).length > fields.length) {
+      let temp = aws.DynamoDB.Converter.unmarshall(element);
+      if (Object.keys(temp).length > fields.length){
         fields = Object.keys(temp);
       }
       records.push(temp);
