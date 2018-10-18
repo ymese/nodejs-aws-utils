@@ -134,7 +134,6 @@ module.exports = {
   },
   importRecord(tableName, jsonFilePath) {
     const dataRecord = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
-    console.log(dataRecord.length);
     return bulkDataRecord(tableName, dataRecord);
   },
 };
