@@ -70,4 +70,15 @@ module.exports = {
       .fromFile(csvFilePath)
       .then(jsonObj => bulkData(tableName, jsonObj));
   },
+  exportRecord(params, locationFile) {
+    const dynamoDB = new aws.DynamoDB();
+    return dynamoDB.scan(params).promise()
+      .then((response) => {
+        fs.writeFileSync(locationFile, JSON.stringify(response.Items));
+        if (fs.existsSync(locationFile)) {
+          return Promise.resolve(true);
+        }
+        return Promise.reject(new Error('error'));
+      }).catch(err => Promise.reject(err));
+  },
 };
