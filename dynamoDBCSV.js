@@ -4,7 +4,7 @@ const aws = require('aws-sdk');
 const path = require('path');
 const csvToJson = require('csvtojson');
 
-function generateDataDynamoDB(tableName, data) {
+function generateDataDynamoDB(tableName, data, isRecord = false) {
   const params = {
     RequestItems: {
     },
@@ -13,7 +13,7 @@ function generateDataDynamoDB(tableName, data) {
   data.forEach((element) => {
     const item = {
       PutRequest: {
-        Item: aws.DynamoDB.Converter.marshall(element),
+        Item: isRecord === true ? element : aws.DynamoDB.Converter.marshall(element),
       },
     };
     params.RequestItems[tableName].push(item);
@@ -55,6 +55,17 @@ function bulkData(tableName, data) {
   const promises = [];
   for (let i = 0; i < data.length; i += 25) {
     const params = generateDataDynamoDB(tableName, standardizedObject(data.slice(i, i + 25)));
+    promises.push(batchWritePromise(dynamoDB, params));
+  }
+  return Promise.all(promises);
+}
+
+function bulkDataRecord(tableName, data) {
+  const dynamoDB = new aws.DynamoDB();
+  const promises = [];
+  for (let i = 0; i < data.length; i += 25) {
+    const params = generateDataDynamoDB(tableName,
+      standardizedObject(data.slice(i, i + 25)), true);
     promises.push(batchWritePromise(dynamoDB, params));
   }
   return Promise.all(promises);
@@ -106,5 +117,20 @@ module.exports = {
     return csvToJson()
       .fromFile(csvFilePath)
       .then(jsonObj => bulkData(tableName, jsonObj));
+  },
+  exportRecord(params, locationFile) {
+    const dynamoDB = new aws.DynamoDB();
+    return dynamoDB.scan(params).promise()
+      .then((response) => {
+        fs.writeFileSync(locationFile, JSON.stringify(response.Items));
+        if (fs.existsSync(locationFile)) {
+          return Promise.resolve(true);
+        }
+        return Promise.reject(new Error('error'));
+      }).catch(err => Promise.reject(err));
+  },
+  importRecord(tableName, jsonFilePath) {
+    const dataRecord = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
+    return bulkDataRecord(tableName, dataRecord);
   },
 };
