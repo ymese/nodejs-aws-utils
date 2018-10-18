@@ -4,7 +4,7 @@ const aws = require('aws-sdk');
 const path = require('path');
 const csvToJson = require('csvtojson');
 
-function generateDataDynamoDB(tableName, data) {
+function generateDataDynamoDB(tableName, data, isRecord = false) {
   const params = {
     RequestItems: {
     },
@@ -13,7 +13,7 @@ function generateDataDynamoDB(tableName, data) {
   data.forEach((element) => {
     const item = {
       PutRequest: {
-        Item: aws.DynamoDB.Converter.marshall(element),
+        Item: isRecord ? element : aws.DynamoDB.Converter.marshall(element),
       },
     };
     params.RequestItems[tableName].push(item);
@@ -24,6 +24,12 @@ function generateDataDynamoDB(tableName, data) {
 function bulkData(tableName, data) {
   const dynamoDB = new aws.DynamoDB();
   const params = generateDataDynamoDB(tableName, data);
+  return dynamoDB.batchWriteItem(params).promise();
+}
+
+function bulkDataRecord(tableName, data) {
+  const dynamoDB = new aws.DynamoDB();
+  const params = generateDataDynamoDB(tableName, data, false);
   return dynamoDB.batchWriteItem(params).promise();
 }
 
@@ -80,5 +86,9 @@ module.exports = {
         }
         return Promise.reject(new Error('error'));
       }).catch(err => Promise.reject(err));
+  },
+  importRecord(tableName, jsonFilePath) {
+    const dataRecord = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
+    return bulkDataRecord(tableName, dataRecord);
   },
 };
