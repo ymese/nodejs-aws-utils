@@ -13,7 +13,7 @@ function generateDataDynamoDB(tableName, data, isRecord = false) {
   data.forEach((element) => {
     const item = {
       PutRequest: {
-        Item: isRecord ? element : aws.DynamoDB.Converter.marshall(element),
+        Item: isRecord === true ? element : aws.DynamoDB.Converter.marshall(element),
       },
     };
     params.RequestItems[tableName].push(item);
@@ -56,14 +56,22 @@ function bulkData(tableName, data) {
   for (let i = 0; i < data.length; i += 25) {
     const params = generateDataDynamoDB(tableName, standardizedObject(data.slice(i, i + 25)));
     promises.push(batchWritePromise(dynamoDB, params));
+    // fs.appendFileSync('./raw.json',JSON.stringify(params), 'utf8');
+    console.log(params.RequestItems.pda_license[0].PutRequest.Item);
+    break;
   }
-  return Promise.all(promises);
+  // return Promise.all(promises);
 }
 
 function bulkDataRecord(tableName, data) {
   const dynamoDB = new aws.DynamoDB();
-  const params = generateDataDynamoDB(tableName, data, false);
-  return dynamoDB.batchWriteItem(params).promise();
+  const promises = [];
+  for (let i = 0; i < data.length; i += 25) {
+    const params = generateDataDynamoDB(tableName,
+      standardizedObject(data.slice(i, i + 25)), true);
+    promises.push(batchWritePromise(dynamoDB, params));
+  }
+  return Promise.all(promises);
 }
 
 function createFile(locaFile, csv) {
@@ -126,6 +134,7 @@ module.exports = {
   },
   importRecord(tableName, jsonFilePath) {
     const dataRecord = JSON.parse(fs.readFileSync(jsonFilePath, 'utf8'));
+    console.log(dataRecord.length);
     return bulkDataRecord(tableName, dataRecord);
   },
 };
