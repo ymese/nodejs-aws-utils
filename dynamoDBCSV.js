@@ -21,7 +21,7 @@ function generateDataDynamoDB(tableName, data) {
   return params;
 }
 
-
+// Remove string empty and format boolean value
 function standardizedObject(data) {
   data.forEach((dataElement, index) => {
     Object.keys(dataElement).forEach((keyElement) => {
@@ -49,6 +49,7 @@ function batchWritePromise(dynamoDB, params) {
 }
 
 
+// Data is not clear when convert csv to json. All values are string.
 function bulkData(tableName, data) {
   const dynamoDB = new aws.DynamoDB();
   const promises = [];
